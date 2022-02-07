@@ -290,7 +290,7 @@ int main(int argc, char **argv) {
   std::ostream stream(nullptr);
   std::stringbuf str;
   stream.rdbuf(&str);
-  kinematic_state.printTransform(frame_tf, stream);
+  // FIXME GM kinematic_state.printTransform(frame_tf, stream);
   ROS_DEBUG_STREAM("transform: " << str.str());
   std::ostream stream2(nullptr);
   std::stringbuf str2;
@@ -356,7 +356,7 @@ int main(int argc, char **argv) {
       std::ostream stream(nullptr);
       std::stringbuf str;
       stream.rdbuf(&str);
-      kinematic_state.printTransform(frame_tf, stream);
+      // FIXME GM kinematic_state.printTransform(frame_tf, stream);
       ROS_DEBUG_STREAM_NAMED("stream_pose", "EEF-pose: " << str.str());
 
       // Time since last point:

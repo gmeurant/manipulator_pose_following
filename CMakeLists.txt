@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(manipulator_pose_following)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -54,8 +54,10 @@ find_package (Eigen REQUIRED)
 
 ## Generate messages in the 'msg' folder
 add_message_files(
+  DIRECTORY
+  msg
  FILES
- DeltaPoseRPY.msg
+   DeltaPoseRPY.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -80,7 +82,9 @@ generate_messages(
  DEPENDENCIES
  std_msgs  # Or other packages containing msgs
 )
-
+set(ALL_GRPC_LIBS ${LIBADDRESS_SORTING} ${LIBARES} ${LIBBORINGSSL} ${LIBGPR} ${LIBGRPC} ${LIBGRPCPP}
+    ${LIBGRPC_ABSEIL} ${LIBGRPCPP_ALTS} ${LIBGRPCPP_ERROR_DETAILS} ${LIBGRPCPP_CHANNELZ} ${LIBGRPC_PLUGIN_SUPPORT} 
+    ${LIBGRPCPP_REFLECTION})
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################
@@ -141,7 +145,6 @@ include_directories(
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -151,6 +154,9 @@ add_executable(moveit_interface src/moveit_interface_node.cpp)
 add_executable(pose_following src/pose_following_node.cpp)
 add_executable(smooth_jogging src/smooth_jogging_node.cpp)
 add_executable(kb_jogging src/kb_jogging_node.cpp)
+
+add_dependencies(pose_following ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(smooth_jogging ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -215,6 +221,23 @@ target_link_libraries(kb_jogging
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
+install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(TARGETS test_traject
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+install(TARGETS moveit_interface
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+install(TARGETS pose_following
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+install(TARGETS smooth_jogging
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+install(TARGETS kb_jogging
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 #############
 ## Testing ##
